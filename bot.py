@@ -15,31 +15,46 @@ logging.basicConfig(
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-async def npc(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    with open("prompt_templates/npc.txt", "r") as file:
-        template = file.read()
-        user_input = ' '.join(context.args)
-        logging.log(logging.DEBUG, user_input)
-        prompt = template.replace("{{user_input}}", user_input)
-        response = await openai.Completion.acreate(
-            engine="text-davinci-003",
-            prompt=prompt,
-            temperature=0.7,
-            max_tokens=1500,
-            n=1,
-            stop=None,
-            timeout=10,
-        )
+async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    available_commands = [f'/{file_name.replace(".txt", "")}' for file_name in os.listdir("prompt_templates") if file_name.endswith(".txt")]
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Available commands: " + ', '.join(available_commands))
 
-        new_npc = response.choices[0].text.strip().replace(".", "\\.").replace("-", "\\-")
-        logging.log(logging.DEBUG, new_npc)
-        await context.bot.send_message(chat_id=update.effective_chat.id, text=new_npc, parse_mode="MarkdownV2")
+
+def handle_template_command(file_name):
+    with open(f"prompt_templates/{file_name}.txt", "r") as file:
+        template = file.read()
+        
+        async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+            user_input = ' '.join(context.args)
+            prompt = template.replace("{{user_input}}", user_input)
+            response = await openai.Completion.acreate(
+                engine="text-davinci-003",
+                prompt=prompt,
+                temperature=0.7,
+                max_tokens=1500,
+                n=1,
+                stop=None,
+                timeout=10,
+            )
+
+            gpt_response = response.choices[0].text.strip().replace(".", "\\.").replace("-", "\\-")
+            logging.log(logging.DEBUG, gpt_response)
+            await context.bot.send_message(chat_id=update.effective_chat.id, text=gpt_response, parse_mode="MarkdownV2")
+
+        return handle_command
 
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_TOKEN")).build()
 
-    start_handler = CommandHandler('npc', npc)
-    application.add_handler(start_handler)
+    for file_name in os.listdir("prompt_templates"):
+        if file_name.endswith(".txt"):
+            file_name = file_name.replace(".txt", "")
+            template_handler = handle_template_command(file_name)
+            handler = CommandHandler(file_name, template_handler)
+            application.add_handler(handler)
+
+    handler = CommandHandler('help', help)
+    application.add_handler(handler)
 
     application.run_polling()
