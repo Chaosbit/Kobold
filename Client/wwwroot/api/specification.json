@@ -1,0 +1,202 @@
+{
+  "x-generator": "NSwag v13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Kobold API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/NPC": {
+      "get": {
+        "tags": [
+          "NPC"
+        ],
+        "operationId": "NPC_GetAll",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NPC"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_configuration/{clientId}": {
+      "get": {
+        "tags": [
+          "OidcConfiguration"
+        ],
+        "operationId": "OidcConfiguration_GetClientRequestParameters",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/WeatherForecast": {
+      "get": {
+        "tags": [
+          "WeatherForecast"
+        ],
+        "operationId": "WeatherForecast_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeatherForecast"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NPC": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "race": {
+            "type": "string"
+          },
+          "profession": {
+            "type": "string",
+            "nullable": true
+          },
+          "alignment": {
+            "type": "string",
+            "nullable": true
+          },
+          "armorClass": {
+            "type": "integer"
+          },
+          "hitPoints": {
+            "type": "integer"
+          },
+          "strength": {
+            "type": "integer"
+          },
+          "dexterity": {
+            "type": "integer"
+          },
+          "constitution": {
+            "type": "integer"
+          },
+          "intelligence": {
+            "type": "integer"
+          },
+          "wisdom": {
+            "type": "integer"
+          },
+          "charisma": {
+            "type": "integer"
+          },
+          "speed": {
+            "type": "integer"
+          },
+          "characterTraits": {
+            "type": "string",
+            "nullable": true
+          },
+          "appearance": {
+            "type": "string",
+            "nullable": true
+          },
+          "backstory": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "WeatherForecast": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "temperatureC": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "temperatureF": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWT": {
+        "type": "apiKey",
+        "description": "Type into the textbox: Bearer {your JWT token}.",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "JWT": []
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+﻿@using Kobold.Shared.Model
+
+<Form TModel="NPC">
+    <FormItem Label="First Name">
+        <Input @bind-Value="@context.FirstName"/>
+    </FormItem>
+    <FormItem Label="Last Name">
+        <Input @bind-Value="@context.LastName"/>
+    </FormItem>
+    <FormItem Label="Race">
+        <Input @bind-Value="@context.Race"/>
+    </FormItem>
+</Form>
+
+@code {
+
+}

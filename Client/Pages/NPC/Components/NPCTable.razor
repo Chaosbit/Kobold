@@ -1,0 +1,46 @@
+﻿@using NPC = Kobold.Shared.Model.NPC
+@using AntDesign.TableModels
+@using System.ComponentModel
+@namespace Kobold.Client.Pages.NPC.Components
+
+<div>
+    <Button OnClick="addNewNpc" Type="primary" Style="margin-bottom:16px">Add a NPC</Button>
+    <Table TItem="NPC" DataSource="@_npcs" Loading="@_loading" Total="@_total" OnChange="@HandleTableChange" Bordered RemoteDataSource>
+        <PropertyColumn Title="Name" Property="c => c.FirstName"/>
+        <PropertyColumn Title="Last Name" Property="c => c.LastName"/>
+        <PropertyColumn Title="Race" Property="c => c.Race"/>
+        <PropertyColumn Title="Profession" Property="c => c.Profession"/>
+    </Table>
+</div>
+
+@code {
+    HttpClient Http = new();
+    NPC[] _npcs = Array.Empty<NPC>();
+    bool _loading;
+    int _total;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        _loading = true;
+        var response = await Http.GetAsync("https://localhost:7102/api/NPC");
+        _npcs = (await response.Content.ReadFromJsonAsync<List<NPC>>())?.ToArray() ?? Array.Empty<NPC>();
+        _total = _npcs.Length;
+        _loading = false;
+    }
+
+    async Task AddNewNpc()
+    {
+        
+    }
+
+    async Task HandleTableChange(QueryModel<NPC> queryModel)
+    {
+        await LoadData();
+    }
+
+}

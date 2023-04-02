@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>Kobold.Server-088c7f59-8955-4d53-8e12-3a273308099a</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="7.0.4" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.18.2" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.18.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="ZymLabs.NSwag.FluentValidation.AspNetCore" Version="0.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Client\Kobold.Client.csproj" />
+    <ProjectReference Include="..\Shared\Kobold.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.4" />
+  </ItemGroup>
+
+  <Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' ">
+    <Exec ConsoleToMSBuild="true" ContinueOnError="true" WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net70) run /variables:Configuration=$(Configuration)">
+      <Output TaskParameter="ExitCode" PropertyName="NSwagExitCode" />
+      <Output TaskParameter="ConsoleOutput" PropertyName="NSwagOutput" />
+    </Exec>
+
+    <Message Text="$(NSwagOutput)" Condition="'$(NSwagExitCode)' == '0'" Importance="low" />
+    <Error Text="$(NSwagOutput)" Condition="'$(NSwagExitCode)' != '0'" />
+  </Target>
+
+</Project>
